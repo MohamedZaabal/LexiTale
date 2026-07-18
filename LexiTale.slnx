@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="LexiTale.API/LexiTale.API.csproj" />
+  <Project Path="LexiTale.Application/LexiTale.Application.csproj" />
+  <Project Path="LexiTale.Domain/LexiTale.Domain.csproj" />
+  <Project Path="LexiTale.Infrastructure/LexiTale.Infrastructure.csproj" />
+  <Project Path="LexiTale.Persistence/LexiTale.Persistence.csproj" />
+</Solution>
