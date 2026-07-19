@@ -1,4 +1,7 @@
+using LexiTale.Application.Interfaces;
+using LexiTale.Infrastructure.Services;
 using LexiTale.Persistence.Context;
+using LexiTale.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,10 +13,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+#region ConnectionString
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")));
+#endregion
 
+#region DependencyInjection
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService,AuthService>();
+
+#endregion
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
