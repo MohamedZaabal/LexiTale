@@ -17,15 +17,34 @@ namespace LexiTale.Infrastructure.Services
             _userRepository = userRepository;
             
         }
-        public Task<string> LoginAsync(LoginRequest request)
+        public async Task<string> LoginAsync(LoginRequest request)
         {
-            throw new NotImplementedException();
+            var user= await _userRepository.GetByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new Exception("Invalid email or password.");
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            {
+                throw new Exception("Invalid email or password.");
+            }
+            return "Login Success";
         }
 
         public async Task RegisterAsync(RegisterRequest request)
         {
             //mapping 
+            var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+            if (existingUser != null)
+            {
+                throw new Exception("User with this email already exists.");
+            }
 
+            if(request.Password.Length < 6)
+            {
+                throw new Exception("Password must be at least 6 characters.");
+            }
             var user = new User
             {
                 Id = Guid.NewGuid(),

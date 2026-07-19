@@ -1,3 +1,4 @@
+using LexiTale.API.Middlewares;
 using LexiTale.Application.Interfaces;
 using LexiTale.Infrastructure.Services;
 using LexiTale.Persistence.Context;
@@ -36,6 +37,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 

@@ -7,6 +7,17 @@ namespace LexiTale.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
+    /* 
+     
+     {
+  "name": "Mohamed",
+  "email": "mohamed@test.com",
+  "password": "123456",
+  "currentLevel": 2
+     }
+     
+     */
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -19,6 +30,12 @@ namespace LexiTale.API.Controllers
         {
             await _authService.RegisterAsync(request);
             return Ok(new { message = "User registered successfully" });
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginRequest request)
+        {
+            var result = await _authService.LoginAsync(request);
+            return Ok(new { message = result });
         }
     }
 }
