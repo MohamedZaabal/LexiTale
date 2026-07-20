@@ -4,7 +4,10 @@ using LexiTale.Application.Interfaces;
 using LexiTale.Infrastructure.Services;
 using LexiTale.Persistence.Context;
 using LexiTale.Persistence.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +27,30 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService,AuthService>();
+builder.Services.AddScoped<IWordRepository, WordRepository>();
+builder.Services.AddScoped<IWordService, WordService>();
 
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("Jwt"));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 
@@ -42,6 +66,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<ExceptionMiddleware>();

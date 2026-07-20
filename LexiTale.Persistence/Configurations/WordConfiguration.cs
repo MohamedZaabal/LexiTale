@@ -25,7 +25,7 @@ namespace LexiTale.Persistence.Configurations
 
             builder.HasOne(x => x.User)
                 .WithMany()
-                .HasForeignKey(x => x.UsrId);
+                .HasForeignKey(x => x.UserId);
                 
         }
     }
