@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LexiTale.Application.Features.Authentication.DTOs
+namespace LexiTale.Application.DTOs
 {
     public class RegisterRequest
     {

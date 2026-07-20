@@ -12,6 +12,7 @@ namespace LexiTale.Application.Interfaces
         Task<User?> GetByEmailAsync(string email);
         Task AddAsync(User user);
         Task SaveChangesAsync();
+        Task<RefreshToken?> GetRefreshTokenAsync(string token);
 
     }
 }

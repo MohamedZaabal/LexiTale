@@ -28,10 +28,18 @@ namespace LexiTale.Persistence.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public async Task<RefreshToken?> GetRefreshTokenAsync(string token)
+        {
+          return await _context.RefreshTokens
+                .Include(x=>x.User)
+                .FirstOrDefaultAsync(rt => rt.Token == token);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
         }
+
 
         }
     }

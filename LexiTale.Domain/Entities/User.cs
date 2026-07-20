@@ -22,6 +22,7 @@ namespace LexiTale.Domain.Entities
         public ICollection<Word> Words { get; set; } = new List<Word>();
         public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
 
-
+        public ICollection<RefreshToken> RefreshTokens { get; set; }
+            =new List<RefreshToken>();
     }
 }

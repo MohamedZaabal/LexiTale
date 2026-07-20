@@ -1,4 +1,5 @@
 using LexiTale.API.Middlewares;
+using LexiTale.Application.DTOs;
 using LexiTale.Application.Interfaces;
 using LexiTale.Infrastructure.Services;
 using LexiTale.Persistence.Context;
@@ -23,6 +24,11 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService,AuthService>();
+
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("Jwt"));
+
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 #endregion
 var app = builder.Build();

@@ -27,5 +27,6 @@ namespace LexiTale.Persistence.Context
         public DbSet<User> Users => Set<User>();
         public DbSet<Word> Words => Set<Word>();
         public DbSet<Exercise> Exercises => Set<Exercise>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     }
 }

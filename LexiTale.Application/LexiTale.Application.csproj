@@ -10,12 +10,4 @@
     <ProjectReference Include="..\LexiTale.Domain\LexiTale.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Authentication\Commands\" />
-    <Folder Include="Features\Authentication\Interfaces\" />
-    <Folder Include="Features\Authentication\Queries\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="Common\" />
-  </ItemGroup>
-
 </Project>

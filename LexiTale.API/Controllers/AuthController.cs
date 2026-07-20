@@ -1,4 +1,4 @@
-﻿using LexiTale.Application.Features.Authentication.DTOs;
+﻿using LexiTale.Application.DTOs;
 using LexiTale.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +35,12 @@ namespace LexiTale.API.Controllers
         public async Task<IActionResult> Login(LoginRequest request)
         {
             var result = await _authService.LoginAsync(request);
+            return Ok(new { message = result });
+        }
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenRequest request)
+        {
+            var result = await _authService.RefreshTokenAsync(request);
             return Ok(new { message = result });
         }
     }

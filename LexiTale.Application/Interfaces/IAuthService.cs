@@ -1,4 +1,4 @@
-﻿using LexiTale.Application.Features.Authentication.DTOs;
+﻿using LexiTale.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,7 @@ namespace LexiTale.Application.Interfaces
     public interface IAuthService
     {
         Task RegisterAsync(RegisterRequest request);
-        Task<string> LoginAsync(LoginRequest request);
+        Task<AuthResponse> LoginAsync(LoginRequest request);
+        Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request);
     }
 }
