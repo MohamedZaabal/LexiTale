@@ -29,6 +29,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService,AuthService>();
 builder.Services.AddScoped<IWordRepository, WordRepository>();
 builder.Services.AddScoped<IWordService, WordService>();
+builder.Services.Configure<GeminiSettings>(builder.Configuration.GetSection("Gemini"));
+builder.Services.AddHttpClient<IAIService, AIService>();
+builder.Services.AddScoped<IStoryService, StoryService>();
 
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("Jwt"));

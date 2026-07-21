@@ -32,5 +32,23 @@ namespace LexiTale.API.Controllers
             await _wordService.AddWordAsync(userId, request);
             return Ok(new { message = "Word added successfully" });
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateWord(Guid id, UpdateWordRequest request)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            await _wordService.UpdateWordAsync(userId, id, request);
+            return Ok(new { message = "Word updated successfully" });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteWord(Guid id)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            await _wordService.DeleteWordAsync(userId, id);
+
+            return Ok("Word Deleted Successfully");
+        }
     }
 }

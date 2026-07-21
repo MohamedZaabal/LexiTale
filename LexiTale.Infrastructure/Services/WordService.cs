@@ -31,10 +31,38 @@ namespace LexiTale.Infrastructure.Services
             await _wordRepository.SaveChangesAsync();
         }
 
+        public async Task DeleteWordAsync(Guid userId, Guid wordId)
+        {
+            var word = await _wordRepository.GetByIdAsync(wordId);
+
+            if (word == null || word.UserId != userId)
+                throw new Exception("Word not found.");
+
+            _wordRepository.Delete(word);
+
+            await _wordRepository.SaveChangesAsync();
+        }
+
         public async Task<List<Word>> GetWordsAsync(Guid userId)
         {
          
             return await _wordRepository.GetAllAsync(userId);
+        }
+
+        public async Task UpdateWordAsync(Guid userId, Guid wordId, UpdateWordRequest request)
+        {
+            var word = await _wordRepository.GetByIdAsync(wordId);
+
+            if (word == null || word.UserId != userId)
+                throw new Exception("Word not found.");
+
+            word.Text = request.Text;
+            word.Language = request.Language;
+            word.IsNewlyLearned = request.IsNewlyLearned;
+
+            _wordRepository.Update(word);
+
+            await _wordRepository.SaveChangesAsync();
         }
     }
 }

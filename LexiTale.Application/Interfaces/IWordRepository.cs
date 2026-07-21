@@ -12,6 +12,13 @@ namespace LexiTale.Application.Interfaces
         Task AddAsync(Word word);
         Task<List<Word>> GetAllAsync(Guid userId);
         Task SaveChangesAsync();
+        Task<Word?> GetByIdAsync(Guid id);
 
+        void Update(Word word);
+
+        void Delete(Word word);
+        Task<List<Word>> GetNewWordsAsync(Guid userId, string language);
+
+        Task<List<Word>> GetOldWordsAsync(Guid userId, string language, int count);
     }
 }

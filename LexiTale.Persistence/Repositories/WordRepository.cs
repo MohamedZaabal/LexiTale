@@ -33,5 +33,40 @@ namespace LexiTale.Persistence.Repositories
         {
             await _context.SaveChangesAsync();
         }
+        public async Task<Word?> GetByIdAsync(Guid id)
+        {
+            return await _context.Words.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public void Update(Word word)
+        {
+            _context.Words.Update(word);
+        }
+
+        public void Delete(Word word)
+        {
+            _context.Words.Remove(word);
+        }
+
+        public async Task<List<Word>> GetNewWordsAsync(Guid userId, string language)
+        {
+            return await _context.Words
+                .Where(x =>
+                    x.UserId == userId &&
+                    x.Language == language &&
+                    x.IsNewlyLearned)
+                .ToListAsync();
+        }
+
+        public async Task<List<Word>> GetOldWordsAsync(Guid userId, string language, int count)
+        {
+            return await _context.Words
+                .Where(x =>
+                    x.UserId == userId &&
+                    x.Language == language &&
+                    !x.IsNewlyLearned)
+                .Take(count)
+                .ToListAsync();
+        }
     }
 }
