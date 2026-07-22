@@ -1,10 +1,5 @@
 ﻿using LexiTale.Application.DTOs;
 using LexiTale.Application.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LexiTale.Infrastructure.Services
 {
@@ -21,17 +16,34 @@ namespace LexiTale.Infrastructure.Services
             _aiService = aiService;
         }
 
-        public async Task<string> GenerateAsync(Guid userId, GenerateStoryRequest request)
+        public async Task<StoryResponse> GenerateAsync(
+            Guid userId,
+            GenerateStoryRequest request)
         {
-            var newWords = await _wordRepository.GetNewWordsAsync(userId, request.Language);
+            var newWords = await _wordRepository.GetNewWordsAsync(
+                userId,
+                request.Language);
 
-            var oldWords = await _wordRepository.GetOldWordsAsync(userId, request.Language, 10);
+            var oldWords = await _wordRepository.GetOldWordsAsync(
+                userId,
+                request.Language,
+                newWords.Count);
 
-            return await _aiService.GenerateStoryAsync(
+            var story = await _aiService.GenerateStoryAsync(
                 request.Language,
                 request.Level,
                 newWords.Select(x => x.Text).ToList(),
                 oldWords.Select(x => x.Text).ToList());
+
+            foreach (var word in newWords)
+            {
+                word.IsNewlyLearned = false;
+                _wordRepository.Update(word);
+            }
+
+            await _wordRepository.SaveChangesAsync();
+
+            return story;
         }
     }
 }

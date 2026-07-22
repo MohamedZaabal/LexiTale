@@ -21,9 +21,11 @@ namespace LexiTale.API.Controllers
         [HttpPost("generate")]
         public async Task<IActionResult> Generate(GenerateStoryRequest request)
         {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var story = await _storyService.GenerateAsync(userId, request);
-            return Ok(story);
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var result = await _storyService.GenerateAsync(userId, request);
+
+            return Ok(result);
         }
     }
 }

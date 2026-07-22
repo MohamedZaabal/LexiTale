@@ -9,6 +9,6 @@ namespace LexiTale.Application.Interfaces
 {
     public interface IStoryService
     {
-        Task<string> GenerateAsync(Guid userId,GenerateStoryRequest request);
+        Task<StoryResponse> GenerateAsync(Guid userId,GenerateStoryRequest request);
     }
 }

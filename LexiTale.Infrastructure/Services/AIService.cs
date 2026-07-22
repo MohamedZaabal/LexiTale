@@ -1,12 +1,8 @@
 ﻿using LexiTale.Application.DTOs;
 using LexiTale.Application.Interfaces;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace LexiTale.Infrastructure.Services
 {
@@ -14,70 +10,117 @@ namespace LexiTale.Infrastructure.Services
     {
         private readonly HttpClient _httpClient;
         private readonly GeminiSettings _settings;
+
         public AIService(HttpClient httpClient, IOptions<GeminiSettings> settings)
         {
             _httpClient = httpClient;
             _settings = settings.Value;
         }
-        public async Task<string> GenerateStoryAsync(
-     string language,
-     string level,
-     List<string> newWords,
-     List<string> oldWords)
+
+        public async Task<StoryResponse> GenerateStoryAsync(
+            string language,
+            string level,
+            List<string> newWords,
+            List<string> oldWords)
         {
-        var prompt = $@"
-            You are a language teacher.
 
-            Language: {language}
 
-            Student Level: {level}
+            #region Prompt
+            var prompt = $@"
+You are a language teacher.
 
-            New Words:
-            {string.Join(", ", newWords)}
+Language: {language}
+Student Level: {level}
 
-            Old Words:
-            {string.Join(", ", oldWords)}
+New Words:
+{string.Join(", ", newWords)}
 
-            Write a short story suitable for the student's level.
+Old Words:
+{string.Join(", ", oldWords)}
 
-            Rules:
-            - Use ALL new words.
-            - Use some old words naturally.
-            - Make the story easy to understand.
-            - After the story, generate 5 comprehension questions.
-            - Finally provide the answers.
-            ";
+Write a short story suitable for the student's level.
+
+Rules:
+- Use ALL new words.
+- Use some old words naturally.
+- Return ONLY valid JSON.
+- Do NOT wrap the JSON inside markdown.
+
+Return exactly this JSON:
+
+{{
+    ""story"": """",
+    ""questions"": [
+        """",
+        """",
+        """",
+        """",
+        """"
+    ],
+    ""answers"": [
+        """",
+        """",
+        """",
+        """",
+        """"
+    ]
+}}
+";
+
+            #endregion
 
             var requestBody = new
             {
-              contents = new[]
+                contents = new[]
+                {
+                    new
                     {
-                        new
+                        parts = new[]
                         {
-                            parts = new[]
+                            new
                             {
-                                new
-                                {
-                                    text = prompt
-                                }
+                                text = prompt
                             }
                         }
                     }
+                }
             };
-            _httpClient.DefaultRequestHeaders.Clear();
 
-            _httpClient.DefaultRequestHeaders.Add(
-     "X-goog-api-key",
-     _settings.ApiKey);
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Add("X-goog-api-key", _settings.ApiKey);
 
             var url =
                 $"https://generativelanguage.googleapis.com/v1beta/models/{_settings.Model}:generateContent";
 
             var response = await _httpClient.PostAsJsonAsync(url, requestBody);
 
+            response.EnsureSuccessStatusCode();
+
             var result = await response.Content.ReadAsStringAsync();
 
-            return result;
+            using var document = JsonDocument.Parse(result);
+
+            var json = document.RootElement
+                .GetProperty("candidates")[0]
+                .GetProperty("content")
+                .GetProperty("parts")[0]
+                .GetProperty("text")
+                .GetString();
+
+            if (string.IsNullOrWhiteSpace(json))
+                throw new Exception("Gemini returned empty response.");
+
+            var story = JsonSerializer.Deserialize<StoryResponse>(
+                json,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            if (story == null)
+                throw new Exception("Failed to parse Gemini response.");
+
+            return story;
         }
     }
 }

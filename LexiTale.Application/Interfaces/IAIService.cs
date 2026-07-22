@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LexiTale.Application.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace LexiTale.Application.Interfaces
 {
     public interface IAIService
     {
-        Task<string> GenerateStoryAsync(
+        Task<StoryResponse> GenerateStoryAsync(
             string language,
             string level,
             List<string> newWords,
