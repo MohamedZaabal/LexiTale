@@ -50,5 +50,25 @@ namespace LexiTale.API.Controllers
 
             return Ok("Word Deleted Successfully");
         }
+
+        [HttpPost("bulk")]
+        [Authorize]
+        public async Task<IActionResult> AddMultiple([FromBody] AddWordsRequest request)
+        {
+            var userId = GetUserId();
+
+            await _wordService.AddMultipleAsync(userId, request);
+
+            return Ok(new
+            {
+                message = "Words added successfully."
+            });
+        }
+        private Guid GetUserId()
+        {
+            return Guid.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!
+            );
+        }
     }
 }

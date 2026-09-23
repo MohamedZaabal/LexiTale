@@ -16,6 +16,35 @@ namespace LexiTale.Infrastructure.Services
         {
             _wordRepository = wordRepository;
         }
+
+        public async Task AddMultipleAsync(Guid userId, AddWordsRequest request)
+        {
+            if (request.Words == null || request.Words.Count == 0)
+                throw new Exception("Please provide at least one word.");
+
+            foreach (var text in request.Words)
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                    continue;
+
+                var word = new Word
+                {
+                    Id = Guid.NewGuid(),
+                    Text = text.Trim(),
+                    Language = request.Language,
+                    IsNewlyLearned = true,
+                    DateAdded = DateTime.UtcNow,
+                    LastReviewedAt = null,
+                    UserId = userId
+                };
+
+                await _wordRepository.AddAsync(word);
+            }
+
+            await _wordRepository.SaveChangesAsync();
+
+        }
+
         public async Task AddWordAsync(Guid userId, CreateWordRequest request)
         {
             var word = new Word

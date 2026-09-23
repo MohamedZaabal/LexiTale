@@ -15,5 +15,10 @@ namespace LexiTale.Application.Interfaces
             List<string> newWords,
             List<string> oldWords
         );
+
+        Task<EvaluationResponse> EvaluateAnswersAsync(
+    List<string> questions,
+    List<string> correctAnswers,
+    List<string> userAnswers);
     }
 }
