@@ -23,6 +23,11 @@ namespace LexiTale.Infrastructure.Services
             var newWords = await _wordRepository.GetNewWordsAsync(
                 userId,
                 request.Language);
+            if (newWords.Count == 0)
+            {
+                throw new Exception(
+                    "You don't have any new words to practice. Add new words first.");
+            }
 
             var oldWords = await _wordRepository.GetOldWordsAsync(
                 userId,

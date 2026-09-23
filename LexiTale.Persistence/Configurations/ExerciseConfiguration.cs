@@ -22,7 +22,7 @@ namespace LexiTale.Persistence.Configurations
                 .IsRequired();
 
             builder.HasOne(x => x.User)
-                .WithMany()
+                .WithMany(x => x.Exercises)
                 .HasForeignKey(x => x.UserId);
                 
 

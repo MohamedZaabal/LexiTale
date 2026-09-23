@@ -24,7 +24,7 @@ namespace LexiTale.Persistence.Configurations
                 .IsRequired();
 
             builder.HasOne(x => x.User)
-                .WithMany()
+                .WithMany(x => x.Words)
                 .HasForeignKey(x => x.UserId);
                 
         }
